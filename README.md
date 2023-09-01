@@ -2,9 +2,9 @@
 A script that takes an input image and turns it into a mosaic of primitve cubes.
 
 Features: <br>
-    -Adjustable quality
-    -Adjustable size
-    -Horizontal and vertical optimization
+    -Adjustable quality<br>
+    -Adjustable size<br>
+    -Horizontal and vertical optimization<br>
 
 Installation:
      
