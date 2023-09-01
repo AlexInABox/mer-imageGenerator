@@ -7,7 +7,7 @@ public class CubeMosaicGenerator : MonoBehaviour
 {
 
     [HideInInspector]
-    public string versionString = "1.1.0";
+    public string versionString = "1.1.0.1";
     [HideInInspector]
     public bool newVersionAvailable = false;
 
@@ -22,7 +22,7 @@ public class CubeMosaicGenerator : MonoBehaviour
     [Header("Settings")]
     [Tooltip("The quality at wich the input image will rendered. \n(1 = full quality, 0.001 = lowest quality)")]
     [Range(0.001f, 1f)]
-    public float quality = 0.25f; // Adjust quality as needed
+    public float quality = 0.01f; // Adjust quality as needed
 
     [Tooltip("One unit equals the height of one in-game door. \n(You can always scale the mosaic in-game later on.)")]
     [Range(0.1f, 10f)]
