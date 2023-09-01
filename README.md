@@ -16,7 +16,7 @@ Hit "Generate".<br>
 Enjoy!<br>
 
 ## Tutorials/Showcase:
-https://cdn.discordapp.com/attachments/952573231204798536/1147143095343910918/showcase_1.png
-https://cdn.discordapp.com/attachments/952573231204798536/1147143095901765714/showcase_2.png
-https://cdn.discordapp.com/attachments/952573231204798536/1147143096463790150/example_tutorial_mer-mosaic-editor.mp4
-https://cdn.discordapp.com/attachments/952573231204798536/1147143097390743653/showcase_mer-mosaic-editor.mp4
+<img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143095343910918/showcase_1.png">
+<img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143095901765714/showcase_2.png">
+<img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143096463790150/example_tutorial_mer-mosaic-editor.mp4">
+<img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143097390743653/showcase_mer-mosaic-editor.mp4">
