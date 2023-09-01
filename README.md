@@ -1,7 +1,7 @@
 # Image generator (Pixel Art / Mosaic Generator) for MER
 A script that takes an input image and turns it into a mosaic of primitve cubes.
 
-Features: 
+Features: <br>
     -Adjustable quality
     -Adjustable size
     -Horizontal and vertical optimization
