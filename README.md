@@ -19,8 +19,7 @@ Enjoy!<br>
 <img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143095343910918/showcase_1.png">
 <img src="https://cdn.discordapp.com/attachments/952573231204798536/1147143095901765714/showcase_2.png">
 <video controls width="250">
-  <source src="https://cdn.discordapp.com/attachments/952573231204798536/1147143096463790150/example_tutorial_mer-mosaic-editor.mp4" type="video/mp4" />
-    </video>
-    <video controls width="250">
-  <source src="https://cdn.discordapp.com/attachments/952573231204798536/1147143097390743653/showcase_mer-mosaic-editor.mp4" type="video/mp4" />
+  <source src="https://cdn.discordapp.com/attachments/952573231204798536/1147143096463790150/example_tutorial_mer-mosaic-editor.mp4" type="video/MP4" />
+  <a href="https://cdn.discordapp.com/attachments/952573231204798536/1147143096463790150/example_tutorial_mer-mosaic-editor.mp4">MP4</a>
 </video>
+
