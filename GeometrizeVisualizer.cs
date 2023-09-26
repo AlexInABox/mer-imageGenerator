@@ -87,8 +87,20 @@ public class GeometrizeVisualizer : MonoBehaviour
                     case 32:
                         createCircle(shape.data, shape.color, wichShape);
                         break;
+                    case 8:
+                        createEllipse(shape.data, shape.color, wichShape);
+                        break;
+                    case 16:
+                        createRotatedEllipse(shape.data, shape.color, wichShape);
+                        break;
+                    case 1:
+                        createCube(shape.data, shape.color, wichShape);
+                        break;
+                    case 2:
+                        createRotatedCube(shape.data, shape.color, wichShape);
+                        break;
                     default:
-                        Debug.Log("Shape Type not supported!");
+                        Debug.Log("Shape Type: " + shape.type + " not supported");
                         break;
                 }
             }
@@ -131,107 +143,88 @@ public class GeometrizeVisualizer : MonoBehaviour
         // Create a new cube
         GameObject cube = Instantiate(cubePrefab, transform);
         // Set the position
-        cube.transform.localPosition = new Vector3(canvas.localScale.x / 2, canvas.localScale.y / 2, 0) - new Vector3(data[0], data[1], -(0.1f * position));
+        //data[0] and data[1] are the x and y coordinates of the top left corner of the rectangle
+        //data[2] and data[3] are the x and y coordinates of the bottom right corner of the rectangle
+
+        float middleOfXCorners = ((data[2] - data[0]) / 2) + data[0];
+        float middleOfYCorners = ((data[3] - data[1]) / 2) + data[1];
+        Vector3 vectorToMiddle = new Vector3(middleOfXCorners * globalSizeMultiplier, middleOfYCorners * globalSizeMultiplier, 0);
+
+        cube.transform.localPosition = new Vector3(canvas.localScale.x / 2, canvas.localScale.y / 2, 0) - vectorToMiddle + new Vector3(0, 0, 0.0001f * position);
+
         // Set the scale
-        cube.transform.localScale = new Vector3(data[2] * 2, data[3] * 2, 0.01f);
+        cube.transform.localScale = new Vector3((data[2] - data[0]) * globalSizeMultiplier, (data[3] - data[1]) * globalSizeMultiplier, 0.00001f);
+
         // Set the color
         Color colorVar = new Color(color[0] / 255f, color[1] / 255f, color[2] / 255f);
         colorVar.a = color[3] / 255f;
 
         cube.GetComponent<PrimitiveComponent>().Color = colorVar;
-        /*
-        cube.GetComponent<Renderer>().material.color = colorVar;
-        cube.GetComponent<Renderer>().material.SetFloat("_Mode", 3);
-        cube.GetComponent<Renderer>().material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        cube.GetComponent<Renderer>().material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        cube.GetComponent<Renderer>().material.SetInt("_ZWrite", 0);
-        cube.GetComponent<Renderer>().material.DisableKeyword("_ALPHATEST_ON");
-        cube.GetComponent<Renderer>().material.EnableKeyword("_ALPHABLEND_ON");
-        cube.GetComponent<Renderer>().material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        cube.GetComponent<Renderer>().material.renderQueue = 3000;
-        */
+        cube.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createRotatedCube(List<int> data, List<int> color)
+    void createRotatedCube(List<int> data, List<int> color, int position)
     {
         // Create a new cube
         GameObject cube = Instantiate(cubePrefab, transform);
         // Set the position
-        cube.transform.localPosition = new Vector3(data[0], data[1], 0.01f);
+        //data[0] and data[1] are the x and y coordinates of the top left corner of the rectangle
+        //data[2] and data[3] are the x and y coordinates of the bottom right corner of the rectangle
+
+        float middleOfXCorners = ((data[2] - data[0]) / 2) + data[0];
+        float middleOfYCorners = ((data[3] - data[1]) / 2) + data[1];
+        Vector3 vectorToMiddle = new Vector3(middleOfXCorners * globalSizeMultiplier, middleOfYCorners * globalSizeMultiplier, 0);
+
+        cube.transform.localPosition = new Vector3(canvas.localScale.x / 2, canvas.localScale.y / 2, 0) - vectorToMiddle + new Vector3(0, 0, 0.0001f * position);
+
         // Set the scale
-        cube.transform.localScale = new Vector3(data[2], data[3], 1);
-        // Set the rotation
-        cube.transform.localRotation = Quaternion.Euler(data[4], 0, 0);
+        cube.transform.localScale = new Vector3((data[2] - data[0]) * globalSizeMultiplier, (data[3] - data[1]) * globalSizeMultiplier, 0.00001f);
+
+        //Set rotation
+        cube.transform.localRotation = Quaternion.Euler(0, 0, data[4]);
+
         // Set the color
         Color colorVar = new Color(color[0] / 255f, color[1] / 255f, color[2] / 255f);
         colorVar.a = color[3] / 255f;
 
         cube.GetComponent<PrimitiveComponent>().Color = colorVar;
-        /*
-        cube.GetComponent<Renderer>().material.color = colorVar;
-        cube.GetComponent<Renderer>().material.SetFloat("_Mode", 3);
-        cube.GetComponent<Renderer>().material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        cube.GetComponent<Renderer>().material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        cube.GetComponent<Renderer>().material.SetInt("_ZWrite", 0);
-        cube.GetComponent<Renderer>().material.DisableKeyword("_ALPHATEST_ON");
-        cube.GetComponent<Renderer>().material.EnableKeyword("_ALPHABLEND_ON");
-        cube.GetComponent<Renderer>().material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        cube.GetComponent<Renderer>().material.renderQueue = 3000;
-        */
+        cube.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createEllipse(List<int> data, List<int> color)
+    void createEllipse(List<int> data, List<int> color, int position)
     {
         // Create a new sphere
         GameObject sphere = Instantiate(spherePrefab, transform);
         // Set the position
-        sphere.transform.localPosition = new Vector3(data[0], data[1], 0.01f);
+        sphere.transform.localPosition = new Vector3(canvas.localScale.x / 2, canvas.localScale.y / 2, 0) - new Vector3(data[0] * globalSizeMultiplier, data[1] * globalSizeMultiplier, -(0.0001f * position));
         // Set the scale
-        sphere.transform.localScale = new Vector3(data[2], data[3], 1);
+        sphere.transform.localScale = new Vector3(data[2] * 2 * globalSizeMultiplier, 0.00001f, data[3] * 2 * globalSizeMultiplier);
+        //Set rotation
+        sphere.transform.localRotation = Quaternion.Euler(90, 0, 0);
         // Set the color
         Color colorVar = new Color(color[0] / 255f, color[1] / 255f, color[2] / 255f);
         colorVar.a = color[3] / 255f;
 
         sphere.GetComponent<PrimitiveComponent>().Color = colorVar;
-        /*
-        sphere.GetComponent<Renderer>().material.color = colorVar;
-        sphere.GetComponent<Renderer>().material.SetFloat("_Mode", 3);
-        sphere.GetComponent<Renderer>().material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_ZWrite", 0);
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHATEST_ON");
-        sphere.GetComponent<Renderer>().material.EnableKeyword("_ALPHABLEND_ON");
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        sphere.GetComponent<Renderer>().material.renderQueue = 3000;
-        */
+        sphere.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createRotatedEllipse(List<int> data, List<int> color)
+    void createRotatedEllipse(List<int> data, List<int> color, int position)
     {
         // Create a new sphere
         GameObject sphere = Instantiate(spherePrefab, transform);
         // Set the position
-        sphere.transform.localPosition = new Vector3(data[0], data[1], 0.01f);
+        sphere.transform.localPosition = new Vector3(canvas.localScale.x / 2, canvas.localScale.y / 2, 0) - new Vector3(data[0] * globalSizeMultiplier, data[1] * globalSizeMultiplier, -(0.0001f * position));
         // Set the scale
-        sphere.transform.localScale = new Vector3(data[2], data[3], 1);
-        // Set the rotation
-        sphere.transform.localRotation = Quaternion.Euler(data[4], 0, 0);
+        sphere.transform.localScale = new Vector3(data[2] * 2 * globalSizeMultiplier, 0.00001f, data[3] * 2 * globalSizeMultiplier);
+        //Set rotation
+        sphere.transform.localRotation = Quaternion.Euler(90f - data[4], 90, 90);
         // Set the color
         Color colorVar = new Color(color[0] / 255f, color[1] / 255f, color[2] / 255f);
         colorVar.a = color[3] / 255f;
 
         sphere.GetComponent<PrimitiveComponent>().Color = colorVar;
-        /*
-        sphere.GetComponent<Renderer>().material.color = colorVar;
-        sphere.GetComponent<Renderer>().material.SetFloat("_Mode", 3);
-        sphere.GetComponent<Renderer>().material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_ZWrite", 0);
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHATEST_ON");
-        sphere.GetComponent<Renderer>().material.EnableKeyword("_ALPHABLEND_ON");
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        sphere.GetComponent<Renderer>().material.renderQueue = 3000;
-        */
+        sphere.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
     void createCircle(List<int> data, List<int> color, int position)
@@ -250,17 +243,6 @@ public class GeometrizeVisualizer : MonoBehaviour
 
         sphere.GetComponent<PrimitiveComponent>().Color = colorVar;
         sphere.GetComponent<PrimitiveComponent>().Collidable = collidable;
-        /*
-        sphere.GetComponent<Renderer>().material.color = colorVar;
-        sphere.GetComponent<Renderer>().material.SetFloat("_Mode", 3);
-        sphere.GetComponent<Renderer>().material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        sphere.GetComponent<Renderer>().material.SetInt("_ZWrite", 0);
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHATEST_ON");
-        sphere.GetComponent<Renderer>().material.EnableKeyword("_ALPHABLEND_ON");
-        sphere.GetComponent<Renderer>().material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        sphere.GetComponent<Renderer>().material.renderQueue = 3000;
-        */
     }
 
     public void clearChildren()
