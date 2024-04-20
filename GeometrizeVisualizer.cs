@@ -71,12 +71,12 @@ public class GeometrizeVisualizer : MonoBehaviour
             return;
         }
 
-        var wichShape = 10; //inital distance from the canvas so that no clipping occurs
+        var whichShape = 10; //inital distance from the canvas so that no clipping occurs
         // Loop through each shape
         foreach (var shape in shapeData.shapes)
         {
             // Now you can access shape properties as expected
-            if (wichShape == 10)
+            if (whichShape == 10)
             {
                 createCanvas(shape.data, shape.color);
             }
@@ -85,26 +85,26 @@ public class GeometrizeVisualizer : MonoBehaviour
                 switch (shape.type)
                 {
                     case 32:
-                        createCircle(shape.data, shape.color, wichShape);
+                        createCircle(shape.data, shape.color, whichShape);
                         break;
                     case 8:
-                        createEllipse(shape.data, shape.color, wichShape);
+                        createEllipse(shape.data, shape.color, whichShape);
                         break;
                     case 16:
-                        createRotatedEllipse(shape.data, shape.color, wichShape);
+                        createRotatedEllipse(shape.data, shape.color, whichShape);
                         break;
                     case 1:
-                        createCube(shape.data, shape.color, wichShape);
+                        createCube(shape.data, shape.color, whichShape);
                         break;
                     case 2:
-                        createRotatedCube(shape.data, shape.color, wichShape);
+                        createRotatedCube(shape.data, shape.color, whichShape);
                         break;
                     default:
                         Debug.Log("Shape Type: " + shape.type + " not supported");
                         break;
                 }
             }
-            wichShape++;
+            whichShape++;
         }
 
         //trigger recompilation of all scripts
@@ -113,7 +113,7 @@ public class GeometrizeVisualizer : MonoBehaviour
 
     private Transform canvas;
 
-    float globalSizeMultiplier; //the value by wich to multiply so that the objects fit on the canvases new size
+    float globalSizeMultiplier; //the value by which to multiply so that the objects fit on the canvases new size
 
     void createCanvas(List<int> data, List<int> color)
     {
