@@ -2,14 +2,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using UnityEditor;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-public class GeometrizeVisualizer : MonoBehaviour
+public class Tag
 {
-    [HideInInspector]
-    public string versionString = "0.0.2 (CIRCLES ONLY)";
+    public string Name { get; set; }
+}
 
+public class Geometrize : MonoBehaviour
+{
+    private static readonly HttpClient client = new HttpClient();
     [HideInInspector]
-    public bool newVersionAvailable = false;
+    public string versionString = "2.20.0"; // Current version of the software
+
+    public async Task<bool> newVersionAvailable()
+    {
+        try
+        {
+            string url = "https://api.github.com/repos/certbot/certbot/tags";
+            if (!client.DefaultRequestHeaders.Contains("User-Agent"))
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", "C# console program");
+            }
+
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+            var tags = JsonConvert.DeserializeObject<List<Tag>>(jsonResponse);
+            string latestTag = tags[0].Name;
+
+            Debug.Log($"Latest version from GitHub: {latestTag}");
+
+            return CompareVersions(latestTag, versionString);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error fetching latest version tag: {ex.Message}");
+            return false;
+        }
+    }
+
+    private bool CompareVersions(string fetchedVersion, string currentVersion)
+    {
+        // Removing 'v' prefix commonly used in version tags if present
+        fetchedVersion = fetchedVersion.TrimStart('v');
+        currentVersion = currentVersion.TrimStart('v');
+
+        // Use System.Version to compare versions correctly
+        if (Version.TryParse(fetchedVersion, out Version fetched) && Version.TryParse(currentVersion, out Version current))
+        {
+            return fetched > current;
+        }
+        Debug.LogError("Failed to parse versions for comparison.");
+        return false;
+    }
     // Input json file
     [Header("Input")]
     public TextAsset jsonFile;
@@ -30,13 +80,12 @@ public class GeometrizeVisualizer : MonoBehaviour
     [HideInInspector]
     public GameObject spherePrefab;
 
-    public void Convert()
+    public void convert()
     {
+        cubePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resources/Blocks/Primitives/Cube.prefab");
+        spherePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resources/Blocks/Primitives/Sphere.prefab");
 
-        if (autoClear)
-        {
-            clearChildren();
-        }
+        if (autoClear) clearChildren();
 
         //This is an example JSON file
         /*
@@ -71,8 +120,8 @@ public class GeometrizeVisualizer : MonoBehaviour
             return;
         }
 
-        var whichShape = 10; //inital distance from the canvas so that no clipping occurs
-        // Loop through each shape
+        var whichShape = 10;
+
         foreach (var shape in shapeData.shapes)
         {
             // Now you can access shape properties as expected
@@ -115,7 +164,7 @@ public class GeometrizeVisualizer : MonoBehaviour
 
     float globalSizeMultiplier; //the value by which to multiply so that the objects fit on the canvases new size
 
-    void createCanvas(List<int> data, List<int> color)
+    public void createCanvas(List<int> data, List<int> color)
     {
         //the canvas will have the height of 3. so we need to calculate the width and set the globalSizeMultiplier
         globalSizeMultiplier = (size * 3f) / data[3]; //when the height is 300 (pixels) the multiplier will be 0.01
@@ -138,7 +187,7 @@ public class GeometrizeVisualizer : MonoBehaviour
         canvas = cube.transform;
     }
 
-    void createCube(List<int> data, List<int> color, int position)
+    private void createCube(List<int> data, List<int> color, int position)
     {
         // Create a new cube
         GameObject cube = Instantiate(cubePrefab, transform);
@@ -163,7 +212,7 @@ public class GeometrizeVisualizer : MonoBehaviour
         cube.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createRotatedCube(List<int> data, List<int> color, int position)
+    private void createRotatedCube(List<int> data, List<int> color, int position)
     {
         // Create a new cube
         GameObject cube = Instantiate(cubePrefab, transform);
@@ -191,7 +240,7 @@ public class GeometrizeVisualizer : MonoBehaviour
         cube.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createEllipse(List<int> data, List<int> color, int position)
+    private void createEllipse(List<int> data, List<int> color, int position)
     {
         // Create a new sphere
         GameObject sphere = Instantiate(spherePrefab, transform);
@@ -209,7 +258,7 @@ public class GeometrizeVisualizer : MonoBehaviour
         sphere.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createRotatedEllipse(List<int> data, List<int> color, int position)
+    private void createRotatedEllipse(List<int> data, List<int> color, int position)
     {
         // Create a new sphere
         GameObject sphere = Instantiate(spherePrefab, transform);
@@ -227,7 +276,7 @@ public class GeometrizeVisualizer : MonoBehaviour
         sphere.GetComponent<PrimitiveComponent>().Collidable = collidable;
     }
 
-    void createCircle(List<int> data, List<int> color, int position)
+    private void createCircle(List<int> data, List<int> color, int position)
     {
         // Create a new sphere
         GameObject sphere = Instantiate(spherePrefab, transform);
@@ -263,13 +312,13 @@ public class GeometrizeVisualizer : MonoBehaviour
     }
 
     [System.Serializable]
-    public class ShapeData
+    private class ShapeData
     {
         public List<Shape> shapes;
     }
 
     [System.Serializable]
-    public struct Shape
+    private struct Shape
     {
         public int type;
         public List<int> data;
