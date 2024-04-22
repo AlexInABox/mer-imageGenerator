@@ -16,13 +16,13 @@ public class Geometrize : MonoBehaviour
 {
     private static readonly HttpClient client = new HttpClient();
     [HideInInspector]
-    public string versionString = "2.20.0"; // Current version of the software
+    public string versionString = "2.2"; // Current version of the software
 
     public async Task<bool> newVersionAvailable()
     {
         try
         {
-            string url = "https://api.github.com/repos/certbot/certbot/tags";
+            string url = "https://api.github.com/repos/AlexInABox/mer-mosaic-generator/tags";
             if (!client.DefaultRequestHeaders.Contains("User-Agent"))
             {
                 client.DefaultRequestHeaders.Add("User-Agent", "C# console program");
@@ -34,8 +34,6 @@ public class Geometrize : MonoBehaviour
             string jsonResponse = await response.Content.ReadAsStringAsync();
             var tags = JsonConvert.DeserializeObject<List<Tag>>(jsonResponse);
             string latestTag = tags[0].Name;
-
-            Debug.Log($"Latest version from GitHub: {latestTag}");
 
             return CompareVersions(latestTag, versionString);
         }
@@ -60,6 +58,7 @@ public class Geometrize : MonoBehaviour
         Debug.LogError("Failed to parse versions for comparison.");
         return false;
     }
+
     // Input json file
     [Header("Input")]
     public TextAsset jsonFile;
